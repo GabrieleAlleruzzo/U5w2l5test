@@ -25,7 +25,14 @@ public class DipendenteController {
 
     @PostMapping("/creaprenotazioni/")
     public ResponseEntity<RispostaPrenotazioneDTO> creaPrenotazione(@Valid @RequestBody BodyPrenotazioneDTO body) {
-        return ResponseEntity.ok(dipenenteService.creaPrenotazioneViaggio(body));
+        RispostaPrenotazioneDTO result=dipenenteService.creaPrenotazioneViaggio(body);
+
+        if (result==null){
+            RispostaPrenotazioneDTO errore=new RispostaPrenotazioneDTO();
+            errore.setMessaggio("non puoi prenotare nella stessa data di un altra prenotazione");
+            return ResponseEntity.badRequest().body(errore);
+        }
+        return ResponseEntity.ok(result);
     }
 
     /*

@@ -10,9 +10,6 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RispostaPrenotazioneDTO {
-    private String nomeDipendete;
-    private String cognomeDipendete;
-    private LocalDate dataPrenotazione;
-    private String luogo;
-    private String note;
+    private String messaggio;
+
 }

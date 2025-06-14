@@ -12,7 +12,10 @@ import U5w2l5test.epicode.repository.PrenotazioneRepository;
 import U5w2l5test.epicode.repository.ViaggioRepository;
 import com.cloudinary.Cloudinary;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
 
 @Service
 public class DipeneteService {
@@ -39,6 +42,8 @@ public class DipeneteService {
     public PrenotazioneRepository prenotazioneRepository;
 
     public RispostaPrenotazioneDTO creaPrenotazioneViaggio (BodyPrenotazioneDTO body) {
+        if (checkDataPrenotazione(body.getDipendete().getId(),body.getViaggioDto().getData())) { return null;}
+
         Viaggio viaggio = new Viaggio();
         viaggio.setDestinazione(body.getViaggioDto().getDestinazione());
         viaggio.setData(body.getViaggioDto().getData());
@@ -49,14 +54,19 @@ public class DipeneteService {
         prenotazione.setNote(body.getPrenotazioneDto().getNote());
         prenotazione.setViaggio(viaggioSalvato);
         prenotazione.setDipendente(body.getDipendete());
-        prenotazione.setDataRichiesta(body.getPrenotazioneDto().getDataRichiesta());
+        prenotazione.setData(body.getPrenotazioneDto().getDataRichiesta());
         prenotazioneRepository.save(prenotazione);
         RispostaPrenotazioneDTO risposta = new RispostaPrenotazioneDTO();
-        risposta.setNote(prenotazione.getNote());
-        risposta.setDataPrenotazione(prenotazione.getDataRichiesta());
-        risposta.setLuogo(prenotazione.getViaggio().getDestinazione());
-        risposta.setNomeDipendete(prenotazione.getDipendente().getNome());
-        risposta.setCognomeDipendete(prenotazione.getDipendente().getCognome());
+        risposta.setMessaggio("prenotazione avvenuta con successo");
         return risposta;
+    }
+
+    public boolean checkDataPrenotazione (long idDipendente, LocalDate dataPrenotazione) {
+        LocalDate data =  dipendenteRepository.trovaDataPrenotazione(idDipendente);
+        if(data==null){
+            return false;
+        }
+        if(data.equals(dataPrenotazione)){ return true;}
+        return false;
     }
 }

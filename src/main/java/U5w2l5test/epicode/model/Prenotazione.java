@@ -3,24 +3,23 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
-
-@Entity
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
+@Entity
 public class Prenotazione {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private  String note;
+    private LocalDate data;
 
-    private LocalDate dataRichiesta;
-
-    @Column(length = 500)
-    private String note;
-
-    @OneToOne
+    @ManyToOne
+    @JoinColumn(name = "dipendente_id")
     private Dipendente dipendente;
 
-    @OneToOne
+    @ManyToOne
+    @JoinColumn(name = "viaggio_id")
     private Viaggio viaggio;
+
+
 }
